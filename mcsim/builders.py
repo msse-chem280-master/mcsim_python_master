@@ -71,3 +71,47 @@ def generate_random_coordinates(num_atoms, density):
         coordinates.append([x_val, y_val, z_val])
 
     return coordinates, box_length
+
+def generate_cubic_lattice(num_atoms, density):
+  """
+  Generate points on a cubic lattice using a desired final density.
+
+  Parameters
+  ----------
+  num_atoms: int
+    The number of atoms to place on the lattice.
+  density: float
+    The desired system density.
+
+  Returns
+  -------
+  coords: list
+    A nested list of generated coordinates.
+  """
+
+  # Calculate box length based on number of atoms and density.
+  volume = num_atoms / density
+  box_length = math.pow(volume, (1./3.))
+
+  # Calculate the upper bound of cube size.
+  # Our approach will be to place atoms until
+  # we place all needed. For this, we need
+  # to determine the maximum number of atoms on each
+  # side.
+  max_side = math.ceil(math.pow(num_atoms, (1./3.)))
+
+  # Determine spacing based on number of atoms
+  # and box length.
+  spacing = box_length / max_side # units length / atom
+  
+  coordinates = []
+  count = 0
+
+  for i in range(max_side):
+    for j in range(max_side):
+      for k in range(max_side):
+        coordinates.append([i*spacing, j*spacing, k*spacing])
+        count += 1
+        if count == num_atoms:
+          return coordinates, box_length
+    
